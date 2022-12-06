@@ -1,0 +1,7 @@
+{
+    "mongoURI": "mongodb+srv://user1:bugfree@cluster0.ifxnhud.mongodb.net/test",
+    "mongoapiTestDBURI": "mongodb+srv://user1:bugfree@cluster0.ifxnhud.mongodb.net/apiTestDB",
+    "mongoTestURI": "mongodb+srv://user1:bugfree@cluster0.ifxnhud.mongodb.net/test01",
+    "jwtSecret": "secret",
+    "jwtHeaderKey": "token"
+}
