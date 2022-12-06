@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>ESN</title>
+  </head>
+  <body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    
+    <button type="button" onclick="backtoPrev()" class="btn btn-dark" style="margin-top: 10px;"> <b>back</b></button>
+
+    <div id = "searchResultContainer" style="max-width: 100%; margin: 5%; margin-bottom: 15%;">
+
+
+    </div>
+    
+    <nav aria-label="Page navigation example" class="fixed-bottom" style="height: 8%; background-color: white;">
+        <ul id = "pagination"class="pagination" style="display: flex; justify-content: center; margin-top: 2%;">
+          <li class="page-item" >
+            <!-- <a class="page-link" href="#" aria-label="Previous" style="color: black;">
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">Previous</span>
+            </a>
+          </li> -->
+          <!-- <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li> -->
+          <!-- <li class="page-item">
+            <a class="page-link" href="#" aria-label="Next" style="color: black;" onclick="resultNext()">
+              <span aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li> -->
+        </ul>
+      </nav>
+
+
+    <script>
+        //get the search type
+        Url = window.location.href;
+        var Strs = Url.split('/');
+        var searchType = Strs[Strs.length - 1]
+        switch(searchType){
+            case "public":
+                showPublicMessageSearch()
+                break;
+            case "announcement":
+                showAnnouncementSearch();
+                break;
+            case "private":
+                showPrivateSearch();
+                break;
+            case "users":
+                showUserSearch();
+                break;
+            case "statusHistory":
+                showStatusHistorySearch();
+                break;
+            default:
+                showPublicMessageSearch()
+                break;               
+            
+        }
+
+
+function showStatusHistorySearch(){
+    data=[];
+    var data = JSON.parse(localStorage.getItem('searchStatusHistoryResult'));
+    // console.log("statusHistory:"+data)
+    var pagenum = Math.ceil(data.length/10)
+    var selected = 0
+
+    document.getElementById("searchResultContainer").innerHTML = "";
+
+    if(data.length==0){
+            const card = document.createElement("div");
+            card.style = "max-width: 100%;";
+            card.className = "card text-white bg-secondary mb-3";
+
+            const username = document.createElement("span")
+
+            username.innerHTML = "Nothing found"
+            username.style = "float: left;padding-right: 5px;"
+
+
+            card.appendChild(username)
+
+            document.getElementById("searchResultContainer").appendChild(card)
+            return
+        }
+
+        var pagination = document.getElementById("pagination")
+        for(let i = 1; i < pagenum+1; i++){
+           var item = document.createElement("li")
+           item.className = "page-item"
+           item.addEventListener("click", (event)=>{
+            selected = parseInt($(event.target).text())-1
+            // console.log("page " + selected)
+            showStatusHistorySearchPage(selected, data)
+        })
+           var link = document.createElement("a")
+           link.className = "page-link"
+           link.innerHTML = i
+
+           item.appendChild(link)
+           pagination.appendChild(item)
+        }
+        showStatusHistorySearchPage(selected, data)
+
+}
+
+
+
+function showMyMessage(sender, time, content, status){
+    const card = document.createElement("div");
+        card.style = "max-width: 100%;"
+        card.className = "card text-white bg-secondary mb-3"
+
+        const header = document.createElement("div")
+        header.className = "card-header"
+
+        const username = document.createElement("span")
+        username.innerHTML = sender
+        username.style = "float: left;padding-right: 5px;"
+
+        const img = document.createElement("img")
+        switch(status){
+            case "ok":
+                img.src = "/pic/green_dot.png"
+                break;
+            case "help":
+                img.src = "/pic/yellow_dot.png"
+                break;
+            case "emergency":
+                img.src = "/pic/red_dot.png"
+                break;
+            default:
+                img.src = "/pic/black_dot.png"
+        }
+        img.width = "10"
+        img.height = "10"
+
+        const cardtime = document.createElement("span")
+        cardtime.innerHTML = time
+        cardtime.style = "float: right"
+
+        const body = document.createElement("div")
+        body.className = "card-body"
+
+        const text = document.createElement("p")
+        text.className = "card-text"
+        text.innerHTML = content
+
+        body.appendChild(text)
+
+        header.appendChild(username)
+        header.appendChild(img)
+        header.appendChild(cardtime)
+
+        card.appendChild(header)
+        card.appendChild(body)
+        document.getElementById("searchResultContainer").append(card)
+
+}
+
+function showOtherMessage(sender, time, content, status){
+    const card = document.createElement("div");
+    card.style = "max-width: 100%;"
+    card.className = "card bg-light mb-3"
+
+    const header = document.createElement("div")
+    header.className = "card-header"
+
+    const username = document.createElement("span")
+    username.innerHTML = sender
+    username.style = "float: left;padding-right: 5px;"
+
+    const img = document.createElement("img")
+    switch(status){
+        case "ok":
+            img.src = "/pic/green_dot.png"
+            break;
+        case "help":
+            img.src = "/pic/yellow_dot.png"
+            break;
+        case "emergency":
+            img.src = "/pic/red_dot.png"
+            break;
+        default:
+            img.src = "/pic/black_dot.png"
+    }
+    img.width = "10"
+    img.height = "10"
+
+    const cardtime = document.createElement("span")
+    cardtime.innerHTML = time
+    cardtime.style = "float: right"
+
+    const body = document.createElement("div")
+    body.className = "card-body"
+
+    const text = document.createElement("p")
+    text.className = "card-text"
+    text.innerHTML = content
+
+    body.appendChild(text)
+
+    header.appendChild(username)
+    header.appendChild(img)
+    header.appendChild(cardtime)
+
+    card.appendChild(header)
+    card.appendChild(body)
+    document.getElementById("searchResultContainer").append(card)
+}
+
+
+function showPrivateSearch(){
+    data=[];
+    var data = JSON.parse(localStorage.getItem('searchPrivateResult'));
+    var pagenum = Math.ceil(data.length/10)
+    var selected = 0
+    // console.log("private"+data)
+    if(data.length==0){
+            const card = document.createElement("div");
+            card.style = "max-width: 100%;";
+            card.className = "card text-white bg-secondary mb-3";
+
+            const username = document.createElement("span")
+
+            username.innerHTML = "Nothing found"
+            username.style = "float: left;padding-right: 5px;"
+
+
+            card.appendChild(username)
+
+            document.getElementById("searchResultContainer").appendChild(card)
+            return
+        }
+
+    var pagination = document.getElementById("pagination")
+        for(let i = 1; i < pagenum+1; i++){
+           var item = document.createElement("li")
+           item.className = "page-item"
+           item.addEventListener("click", (event)=>{
+            selected = parseInt($(event.target).text())-1
+            // console.log("page " + selected)
+            showPrivateSearchPage(selected, data)
+        })
+           var link = document.createElement("a")
+           link.className = "page-link"
+           link.innerHTML = i
+
+           item.appendChild(link)
+           pagination.appendChild(item)
+        }
+        showPrivateSearchPage(selected, data)
+}
+
+
+    function showAnnouncementSearch(){
+        data=[];
+        var data = JSON.parse(localStorage.getItem('searchAnnouncementResult'));
+
+        document.getElementById("searchResultContainer").innerHTML = "";
+
+        if(data.length==0){
+            const card = document.createElement("div");
+            card.style = "max-width: 100%;";
+            card.className = "card text-white bg-secondary mb-3";
+
+            const username = document.createElement("span")
+
+            username.innerHTML = "Nothing found"
+            username.style = "float: left;padding-right: 5px;"
+
+
+            card.appendChild(username)
+
+            document.getElementById("searchResultContainer").appendChild(card)
+            return
+        }
+
+        var pagenum = Math.min(Math.ceil(data.length/10),10)
+        var selected = 0
+
+        var pagination = document.getElementById("pagination")
+        for(let i = 1; i < pagenum+1; i++){
+           var item = document.createElement("li")
+           item.className = "page-item"
+           item.addEventListener("click", (event)=>{
+            selected = parseInt($(event.target).text())-1
+            console.log("page " + selected)
+            showPublicSearchPage(selected, data)
+        })
+           var link = document.createElement("a")
+           link.className = "page-link"
+           link.innerHTML = i
+
+           item.appendChild(link)
+           pagination.appendChild(item)
+        }
+        showAnnouncementSearchPage(selected, data)
+        
+    }  
+
+    function showPublicMessageSearch(){
+        var data=[];
+        data = JSON.parse(localStorage.getItem('searchPublicResult'));
+
+
+
+        if(data.length==0){
+            const card = document.createElement("div");
+            card.style = "max-width: 100%;";
+            card.className = "card text-white bg-secondary mb-3";
+
+            const username = document.createElement("span")
+
+            username.innerHTML = "Nothing found"
+            username.style = "float: left;padding-right: 5px;"
+
+
+            card.appendChild(username)
+
+            document.getElementById("searchResultContainer").appendChild(card)
+            return
+        }
+
+        var pagenum = Math.ceil(data.length/10)
+        var selected = 0
+
+        // <!-- <li class="page-item"><a class="page-link" href="#">1</a></li>
+        var pagination = document.getElementById("pagination")
+        for(let i = 1; i < pagenum+1; i++){
+           var item = document.createElement("li")
+           item.className = "page-item"
+           item.addEventListener("click", (event)=>{
+            selected = parseInt($(event.target).text())-1
+            console.log("page " + selected)
+            showPublicSearchPage(selected, data)
+        })
+           var link = document.createElement("a")
+           link.className = "page-link"
+           link.innerHTML = i
+
+           item.appendChild(link)
+           pagination.appendChild(item)
+        }
+        showPublicSearchPage(selected, data)
+
+        
+    }
+
+    function showUserSearch(){
+        data=[];
+        var data = JSON.parse(localStorage.getItem('searchUserResult'));
+
+        document.getElementById("searchResultContainer").innerHTML = "";
+
+        if(data.length==0){
+            const card = document.createElement("div");
+            card.style = "max-width: 100%;";
+            card.className = "card text-white bg-secondary mb-3";
+
+            const username = document.createElement("span")
+
+            username.innerHTML = "Nothing found"
+            username.style = "float: left;padding-right: 5px;"
+
+
+            card.appendChild(username)
+
+            document.getElementById("searchResultContainer").appendChild(card)
+            return
+        }
+
+        for(i in data){
+            var usernamedata =data[i].username;
+            var statusdata = data[i].status;
+            var unreaddata = data[i].unread;
+            var onlinedata =data[i].online;
+
+        // <div class="card text-white bg-secondary mb-3" style="max-width: 100%;" onclick="location.href = '/views_refactor_temp/private_chat.html'"> 
+        //     <div class="card-header">
+        //         <span style="float: left;padding-right: 5px;">User1</span>
+        //         <img src="/views_refactor_temp/green_dot.png" width="10" height="10">
+        //         <img src="/views_refactor_temp/unread.png" width="30" height="30" style="float: right;" >
+        //     </div>
+        // </div>
+
+
+            const card = document.createElement("div");
+            card.style = "max-width: 100%;";
+            if(onlinedata){
+                card.className = "card bg-light mb-3";
+            }else{
+                card.className = "card text-white bg-secondary mb-3";
+            }
+
+            const header = document.createElement("div")
+            header.className = "card-header"
+
+            const username = document.createElement("span")
+            username.innerHTML = usernamedata
+            username.style = "float: left;padding-right: 5px;"
+
+            const statusimg = document.createElement("img")
+            switch(statusdata){
+                case "ok":
+                    statusimg.src = "/pic/green_dot.png"
+                    break;
+                case "help":
+                    statusimg.src = "/pic/yellow_dot.png"
+                    break;
+                case "emergency":
+                    statusimg.src = "/pic/red_dot.png"
+                    break;
+                default:
+                    statusimg.src = "/pic/black_dot.png"
+            }
+            statusimg.width = "10"
+            statusimg.height = "10"
+
+            const userUnread = document.createElement("img")
+            userUnread.style = "float: right;";
+            userUnread.src = "/pic/unread.png"
+            userUnread.width = "30"
+            userUnread.height = "30"
+
+
+            //read or not
+            if(unreaddata==true){
+                userUnread.hidden = false;
+            }else{
+                userUnread.hidden = true;
+            }
+
+
+            header.appendChild(username)
+            header.appendChild(statusimg)
+            header.appendChild(userUnread)
+
+            card.appendChild(header)
+
+            document.getElementById("searchResultContainer").appendChild(card)
+        }
+    }  
+    
+    function backtoPrev(){
+        window.history.go(-1)
+    }
+
+    function showStatusHistorySearchPage(selected, data){
+    
+        document.getElementById("searchResultContainer").innerHTML = "";
+
+        for(let i = 10*selected; i < Math.min(10*selected+10, data.length); i++){
+        var usernamedata =data[i].username;
+        var timedata = data[i].time;
+        var fromStatusdata = data[i].fromStatus;
+        var toStatusdata = data[i].toStatus;
+
+        const card = document.createElement("div");
+        card.style = "max-width: 100%;";
+        card.className = "card text-white bg-secondary mb-3";
+
+        const header = document.createElement("div")
+        header.className = "card-header"
+
+        const username = document.createElement("span")
+
+        username.innerHTML = usernamedata
+        username.style = "float: left;padding-right: 5px;"
+
+
+        const cardtime = document.createElement("span")
+        cardtime.innerHTML = timedata.substring(0,10)+timedata.substring(11, 19)
+        cardtime.style = "float: right"
+
+        const body = document.createElement("div")
+        body.className = "card-body"
+
+        const text = document.createElement("p")
+        text.className = "card-text"
+        text.innerHTML = fromStatusdata+" to "+toStatusdata
+
+        body.appendChild(text)
+
+        header.appendChild(username)
+        header.appendChild(cardtime)
+
+        card.appendChild(header)
+        card.appendChild(body)
+
+        document.getElementById("searchResultContainer").appendChild(card)
+    }
+}
+    function showPrivateSearchPage(selected, data){
+        var username = localStorage.getItem('username')
+        document.getElementById("searchResultContainer").innerHTML = "";
+        for(let i = 10*selected; i < Math.min(10*selected+10, data.length); i++){
+            var sender =data[i].sender
+            var time = data[i].time.substring(0, 10)+" "+data[i].time.substring(11, 19)
+            var content = data[i].content
+            var senderStatus = data[i].senderStatus
+
+            if(sender == username){
+                showMyMessage(sender, time, content, senderStatus)
+            }else{
+                showOtherMessage(sender, time, content, senderStatus)
+            }
+        }
+        $(window).scrollTop(0);
+    }
+
+    function showPublicSearchPage(selected, data){
+        document.getElementById("searchResultContainer").innerHTML = "";
+
+        for(let i = 10*selected; i < Math.min(10*selected+10, data.length); i++){
+            console.log(data[i]);
+            var content = data[i].content;
+            var sender = data[i].sender;
+            var time = data[i].time.substring(0, 10)+" "+data[i].time.substring(11, 19)
+            var senderStatus = data[i].senderStatus;
+            console.log("senderstatus: "+senderStatus)
+
+            const card = document.createElement("div");
+            card.style = "max-width: 100%;";
+            card.className = "card text-white bg-secondary mb-3";
+
+            const header = document.createElement("div")
+            header.className = "card-header"
+
+            const username = document.createElement("span")
+
+            username.innerHTML = sender
+            username.style = "float: left;padding-right: 5px;"
+
+            const img = document.createElement("img")
+            switch(senderStatus){
+                case "ok":
+                    img.src = "/pic/green_dot.png"
+                    break;
+                case "help":
+                    img.src = "/pic/yellow_dot.png"
+                    break;
+                case "emergency":
+                    img.src = "/pic/red_dot.png"
+                    break;
+                default:
+                    img.src = "/pic/black_dot.png"
+            }
+            img.width = "10"
+            img.height = "10"
+
+            const cardtime = document.createElement("span")
+            cardtime.innerHTML = time
+            cardtime.style = "float: right"
+
+            const body = document.createElement("div")
+            body.className = "card-body"
+
+            const text = document.createElement("p")
+            text.className = "card-text"
+            text.innerHTML = content
+
+            body.appendChild(text)
+
+            header.appendChild(username)
+            header.appendChild(img)
+            header.appendChild(cardtime)
+            card.appendChild(header)
+            card.appendChild(body)
+
+            document.getElementById("searchResultContainer").appendChild(card)
+        }
+        
+        $(window).scrollTop(0);
+    }
+
+    function showAnnouncementSearchPage(selected, data){
+        for(let i = 10*selected; i < Math.min(10*selected+10, data.length); i++){
+            var content =data[i].content;
+            var sender = data[i].sender;
+            var time = data[i].time.substring(0,10) + " " + data[i].time.substring(11,19);
+
+            const card = document.createElement("div");
+            card.style = "max-width: 100%;";
+            card.className = "card text-white bg-secondary mb-3";
+
+            const header = document.createElement("div")
+            header.className = "card-header"
+
+            const username = document.createElement("span")
+
+            username.innerHTML = sender
+            username.style = "float: left;padding-right: 5px;"
+
+
+            const cardtime = document.createElement("span")
+            cardtime.innerHTML = time
+            cardtime.style = "float: right"
+
+            const body = document.createElement("div")
+            body.className = "card-body"
+
+            const text = document.createElement("p")
+            text.className = "card-text"
+            text.innerHTML = content
+
+            body.appendChild(text)
+
+            header.appendChild(username)
+            header.appendChild(cardtime)
+
+            card.appendChild(header)
+            card.appendChild(body)
+
+            document.getElementById("searchResultContainer").appendChild(card)
+        }
+    }
+    </script>
+
+
+
+   
+
+
+
+  </body>
+</html>

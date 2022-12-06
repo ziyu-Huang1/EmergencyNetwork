@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>ESN</title>
+  </head>
+  <body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <nav id = "efg"></nav> 
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <a class="navbar-brand" onclick="jumpToPublicWall()" style="color: white">
+            <img src="/pic/example.png" width="30" height="30" class="d-inline-block align-top" alt="">
+          ESN
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+          <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToAnnouncement()">Announcements</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToDonation()">Donation</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToEmergencyContact()">Emergency Contact</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToDelivery()">Food Delivery</a>
+              </li>
+              <li class="nav-item" id="jumpToMeasure">
+                <a class="nav-link" onclick="jumpToMeasure()">Measure Performance</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToPublicWall()">Public Wall<span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToShelter()">Shelters</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToShop()">Shop For All</a>
+              </li>
+              
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToDirectory()">User Directory</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToProfile()">User Profile</a>
+              </li>
+            </ul>
+           
+          </div>
+    </nav>
+    <h4> Details of Other's Request </h4>
+    <form style="max-width: 100%; margin:5%;">
+        <div id="donationID"></div>
+        <div class="form-group">
+          <label>Applied Item Name</label>
+          <p id="itemName"></p>
+        </div>
+        <div class="form-group">
+          <label>Request Number</label>
+          <p id="requestNum"></p>
+        </div>
+        <div class="form-group">
+          <label>Item Left</label>
+          <p id="capacity"></p>
+        </div>
+        <div class="form-group">
+            <label>Reason</label>
+            <p id="reason"></p>
+        </div>
+
+       <button type="button" class="btn btn-dark" style="width: 49%;" onclick="handlingDonationRequest('Accepted')">Accept</button>
+       <button type="button" class="btn btn-dark" style="width: 49%;" onclick="handlingDonationRequest('Rejected')">Reject</button>
+
+        <!-- <button type="button" class="btn btn-dark" style="width: 48%; float: right;" data-toggle="modal" data-target="#registerModal">register</button> -->
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript"   src="../../../public/jumpPage"></script> 
+
+
+  <script>
+
+        var username = localStorage.getItem('username')
+        var socket =  io({
+            query:{
+                user: username
+            }
+        })
+        url = window.location.href;
+        var requestID = url.split('=')[1];
+        socket.on('connect',()=>{  
+            updateUserSocketMap(username, socket)
+        })
+
+        getAndShowRequestInfo()
+
+        function updateUserSocketMap(username, socket){
+            var data = {
+                'username': username,
+                'socket':socket.id
+            }
+            $.ajax({
+                contentType: 'application/json; charset=UTF-8',
+                data: JSON.stringify(data),
+                type: 'put',
+                url: '/messages/public/socketUpdate',
+                dataType: 'json',
+                success: function (data, status, jqXHR) {
+                    //console.log(username+" directory socket update success")
+                },
+                error: function(jqXHR, status, err){
+                    //console.log(username+" directory socket update failed")
+                }
+            })
+        }
+
+        function handlingDonationRequest(replyStatus){
+            var capacity = document.getElementById("capacity").innerHTML
+            var requestNum = document.getElementById("requestNum").innerHTML
+            var donationID = document.getElementById("donationID").className
+            var itemName = document.getElementById("itemName").innerHTML
+            //put
+            var data ={
+                'donationID':donationID,
+                'requestID':requestID,
+                'status': replyStatus
+            }
+            //after accepting/rejecting, this request's status should be Accepted, and this requestID would be deleted from the donation requestList
+            $.ajax({
+                contentType: 'application/json; charset=UTF-8',
+                type: 'put', 
+                url: "/donations/otherRequest/update" ,
+                data: JSON.stringify(data),
+                dataType: "json",
+                success: function (data, status, jqXHR) {
+                    if(requestNum=="") requestNum=1
+                    var newCapacity= parseInt(capacity) - parseInt(requestNum)
+                    console.log("capacity: "+capacity+" requestNum: "+requestNum+" new capa "+newCapacity)
+                    capacityUpdateData = {
+                      'donationID': donationID,
+                      'capacity': newCapacity
+                    }
+
+                    if(replyStatus == "Accepted"){
+                          //after accepting the status, we should tell donation's request list that its capacity have changed(actually, only pending request needs this)
+                          $.ajax({
+                              contentType: 'application/json; charset=UTF-8',
+                              type: 'put', 
+                              url: "/donations/capacity" ,
+                              data: JSON.stringify(capacityUpdateData),
+                              dataType: "json",
+                              success: function (data, status, jqXHR) {
+
+                                  //if after accepting the request, the capacity is zero, the donation's status would be changed, and the donation's requestlist should also be changed.
+                                  if(newCapacity == 0){
+                                    console.log("donation now is empty")
+                                    statusUpateData = {
+                                      'donationID': donationID,
+                                      'donationStatus': "donaiton closed"
+                                    }
+                                      $.ajax({
+                                        contentType: 'application/json; charset=UTF-8',
+                                        type: 'put', 
+                                        url: "/donations/status" ,
+                                        data: JSON.stringify(statusUpateData),
+                                        dataType: "json",
+                                        success: function (data, status, jqXHR) {
+                                            //window.history.go(-1)
+                                            //after chaning the status, we should tell donation that its capacity have changed
+                                            window.location.href = "/users/donation/otherRequest/donationID?"+donationID+"&itemName?"+itemName
+                                        },error: function(jqXHR, status, err){
+                                            alert("update donation's capacity failed", err);
+                                        }
+                                    })
+                                  }
+                                  window.location.href = "/users/donation/otherRequest/donationID?"+donationID+"&itemName?"+itemName
+                              },error: function(jqXHR, status, err){
+                                  alert("update donation's capacity failed", err);
+                              }
+                          })
+                    }else{
+                        //after rejecting, nothing would be changed
+                        window.location.href = "/users/donation/otherRequest/donationID?"+donationID+"&itemName?"+itemName
+                    }
+                    
+                },error: function(jqXHR, status, err){
+                    alert("accept request failed", err);
+                }
+            })
+
+
+        }
+
+        function getAndShowRequestInfo(){
+
+            var data = {
+              'requestID': requestID
+            }
+            $.ajax({
+                contentType: 'application/json; charset=UTF-8',
+                type: 'put', 
+                url: "/donations/otherRequest/detail" ,
+                data: JSON.stringify(data),
+                dataType: "json",
+                success: function (data, status, jqXHR) {
+                    const otherRequestDetail = data["data"]
+                    var itemName = otherRequestDetail[0].itemName
+                    var capacity =otherRequestDetail[0].capacity
+                    var requestNum = otherRequestDetail[0].requestNum
+                    var reason = otherRequestDetail[0].reason
+                    var donationID = otherRequestDetail[0].donationID
+
+                    document.getElementById("itemName").innerHTML = itemName
+                    document.getElementById("capacity").innerHTML =capacity
+                    document.getElementById("requestNum").innerHTML =requestNum
+                    document.getElementById("reason").innerHTML = reason
+                    document.getElementById("donationID").className = donationID
+                    
+
+                },
+                error: function(jqXHR, status, err){
+                    alert("otherDonationRquests loading failed", err);
+                }
+              })
+        }
+
+       
+        function jumpToPublicWall(){
+            window.location.href = "/users/public/"+localStorage.getItem('username')
+        }
+
+        function jumpToDirectory(){
+            window.location.href = "/users/directory/"+localStorage.getItem('username')
+        }
+
+        function jumpToMeasure(){
+            window.location.href = "/users/measure/"+localStorage.getItem('username')
+        }
+
+        function jumpToAnnouncement(){
+            window.location.href = "/users/announcement/"+localStorage.getItem('username')
+        }
+
+        function jumpToProfile(){
+            window.location.href = "/users/profile/"+localStorage.getItem('username')
+        }
+
+        function jumpToDonation(){
+            window.location.href = "/users/donation/"+localStorage.getItem('username')
+        }
+  </script>
+
+
+
+  </body>
+</html>

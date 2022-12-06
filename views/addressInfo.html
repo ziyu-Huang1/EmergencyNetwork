@@ -1,0 +1,232 @@
+<!Doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>ESN-Food</title>
+  </head>
+  <body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.js'></script>
+
+
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css' rel='stylesheet' />
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+
+    <script src = "/socket.io/socket.io.js" ></script>
+    <!-- <script src = "../public/socket"></script> -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+      <a class="navbar-brand" onclick="jumpToPublicWall()" style="color: white">
+        <img src="/pic/example.png" width="30" height="30" class="d-inline-block align-top" alt="">
+          ESN
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+          <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToAnnouncement()">Announcements</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToDonation()">Donation</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToEmergencyContact()">Emergency Contact</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToDelivery()">Food Delivery</a>
+              </li>
+              <li class="nav-item" id="jumpToMeasure">
+                <a class="nav-link" onclick="jumpToMeasure()">Measure Performance</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToPublicWall()">Public Wall<span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToShelter()">Shelters</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToShop()">Shop For All</a>
+              </li>
+              
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToDirectory()">User Directory</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToProfile()">User Profile</a>
+              </li>
+            </ul>
+           
+          </div>
+    </nav>
+
+    <div style="margin: 5%; align-items: center; display: flex; flex-direction: column;">
+        <h3> Address Info </h3>
+    <div style="width: 100%; background-color:lightgray; max-width: 100%; margin: 5%;">
+
+    
+      <form style="max-width: 100%; margin:5%;">
+        <div class="form-group">
+          <label for="exampleInputEmail1"><b> Address </b> </label>
+          <input type="username" class="form-control" id="address" aria-describedby="emailHelp" placeholder="Enter address (less than 200)">
+        </div>
+
+        <div class="form-group">
+            <label for="exampleInputEmail1"> <b> latitude and longitude  </b> <br> (eg. -77.04, 38.907)</label>
+            <input type="x" class="form-control" id="x" aria-describedby="x" placeholder="x">
+            <input type="y" class="form-control" id="y" aria-describedby="y" placeholder="y">
+          </div>
+
+
+        <div style="display: flex; flex-direction:row; align-items: center;">
+            <div style="width: 50%; display: flex; flex-direction: column; ">
+                <button  class="btn btn-dark my-2 my-sm-0" id="mapButton" type="button" onclick="back()" >Back</button> 
+            </div>
+            <div style="width: 50%; display: flex; flex-direction: column; "></div>
+                <button class="btn btn-dark my-3 my-sm-0" style="width: 150px;" onclick="confirmEdition()" type="button" >Edit</button> 
+            </div>
+            <!-- <button type="button" class="btn btn-dark" style="width: 48%; float: right;" data-toggle="modal" data-target="#registerModal">register</button> -->
+        </div>
+    </form>
+
+    </div>
+    
+
+    </div>
+  </body>
+  <script type="text/javascript"   src="../../public/jumpPage"></script> 
+<script>
+
+var url = window.location.href;
+    var strs = url.split('/');
+    var curUserName = strs[strs.length - 1];
+    
+
+  function init(){
+    console.log(curUserName);
+    $.ajax({
+        contentType: 'application/json; charset=UTF-8',
+        type: 'get',
+        url: '/deliverys/userAddress?username='+curUserName,
+        success: function (res) {   
+          console.log(res);
+          if(res.data.length){
+            var addr = res.data[0];
+            document.getElementById("x").value = addr.x;
+            document.getElementById("y").value = addr.y;
+            document.getElementById("address").value = addr.address;
+          }
+        },
+        error: function(jqXHR, status, err){
+          console.log(username + " address edition failed")
+      }
+    });
+  }
+    function validateAddress(addr){
+        if(addr == "" || addr.length > 200)
+         return false;
+        return true;
+    }
+
+    function validateContact(contact){
+        var newStr = "";
+        for(var i=0;i<contact.length;i++){
+            if(contact[i] >= '0' && contact[i] <= '9'){
+                newStr = newStr + contact[i];
+            }
+            else{
+                if(contact[i]!=' '){
+                    return false;
+                }
+            }
+        }
+        return newStr.length == 10;
+    }
+
+    function validatePos(x){
+        for(var i=0;i<x.length;i++){
+            if(!(x[i] >= '0' && x[i] <= '9') && x[i]!='.' && x[i]!='-' && x[i]!='+')
+            return false;
+        }
+        
+        var res = parseFloat (x);
+        console.log(res);
+        if(res && res >= -180 && res <= 180){
+            return true;
+        }
+        return false;
+    }
+
+    function validateDescription(description){
+        if(description == "" || description.length > 200)
+         return false;
+        return true;
+    }
+
+
+
+    function back(){
+        document.getElementById("x").value = "";
+        document.getElementById("y").value = "";
+        document.getElementById("address").value = "";
+        window.location.href = "/users/deliverys/" + curUserName;
+    }
+
+    function confirmEdition(){
+        var check = false;
+        if(!validateAddress(document.getElementById("address").value)){
+            alert("address is invalid");
+        }
+        else if(!validatePos(document.getElementById("x").value) || !validatePos(document.getElementById("y").value)){
+            alert("coordinate is invalid");      
+        }
+        else{
+            check = true;
+        }
+        
+        if(!check) return;
+    // var url = window.location.href;
+    // var strs = url.split('/');
+    var username = curUserName;
+    // console.log(strs[5].split('&')[1]+"getprivatechat "+receiver)
+    // receiver = strs[5].split('&')[1].substring(9);
+    var data = {
+        'username': username,
+        'positon': "[70, 70]",
+        'x': document.getElementById("x").value,
+        'y': document.getElementById("y").value,
+        'address': document.getElementById("address").value
+    };
+    console.log(data);
+    $.ajax({
+        contentType: 'application/json; charset=UTF-8',
+        type: 'post',
+        url: '/deliverys/userAddress',
+        data: JSON.stringify(data),
+        success: function (res) {
+          alert("Edit success!");  
+          console.log(curUserName);
+          back();
+        },
+        error: function(jqXHR, status, err){
+          console.log(username + " address edition failed")
+      }
+    });
+    }
+    init();
+</script>
+  
+</html>

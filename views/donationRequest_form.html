@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>ESN</title>
+  </head>
+  <body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <nav id = "efg"></nav> 
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <a class="navbar-brand" onclick="jumpToPublicWall()" style="color: white">
+            <img src="/pic/example.png" width="30" height="30" class="d-inline-block align-top" alt="">
+          ESN
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+          <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToAnnouncement()">Announcements</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToDonation()">Donation</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToEmergencyContact()">Emergency Contact</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToDelivery()">Food Delivery</a>
+              </li>
+              <li class="nav-item" id="jumpToMeasure">
+                <a class="nav-link" onclick="jumpToMeasure()">Measure Performance</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToPublicWall()">Public Wall<span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToShelter()">Shelters</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToShop()">Shop For All</a>
+              </li>
+              
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToDirectory()">User Directory</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToProfile()">User Profile</a>
+              </li>
+            </ul>
+           
+          </div>
+    </nav>
+
+    <form style="max-width: 100%; margin:5%;">
+        <div class="form-group">
+          <label>Item Name</label>
+          <p id="itemName"></p>
+        </div>
+        <div class="form-group">
+          <label>Request Number</label>
+          <input class="form-control" id="requestNum" placeholder="Enter request Number">
+        </div>
+        <div class="form-group">
+          <label>Reason</label>
+          <input class="form-control" id="reason" placeholder="Enter reason">
+        </div>
+       <button type="button" class="btn btn-dark" style="width: 100%;" onclick="submitDonationRequest()">submit</button>
+
+        <!-- <button type="button" class="btn btn-dark" style="width: 48%; float: right;" data-toggle="modal" data-target="#registerModal">register</button> -->
+    </form>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript"   src="../../../public/jumpPage"></script> 
+
+    <script src="../../../public/donationRequest_form"></script> 
+
+  <script>
+
+
+
+
+//   </script>
+
+
+
+  </body>
+</html>

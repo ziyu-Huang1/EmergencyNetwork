@@ -1,0 +1,257 @@
+<!Doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>ESN-Food</title>
+  </head>
+  <body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.js'></script>
+<script>
+  var curRole = 0;
+</script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css' rel='stylesheet' />
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+
+    <!-- <script src = "/socket.io/socket.io.js" ></script> -->
+    <!-- <script src = "../public/socket"></script> -->
+    <!-- <script src = "../../public/publicWall"></script> -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+      <a class="navbar-brand" onclick="jumpToPublicWall()" style="color: white">
+        <img src="/pic/example.png" width="30" height="30" class="d-inline-block align-top" alt="">
+          ESN
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+          <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToAnnouncement()">Announcements</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToDonation()">Donation</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToEmergencyContact()">Emergency Contact</a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" onclick="jumpToDelivery()">Food Delivery</a>
+              </li>
+              <li class="nav-item" id="jumpToMeasure">
+                <a class="nav-link" onclick="jumpToMeasure()">Measure Performance</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToPublicWall()">Public Wall<span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToShelter()">Shelters</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToShop()">Shop For All</a>
+              </li>
+              
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToDirectory()">User Directory</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="jumpToProfile()">User Profile</a>
+              </li>
+            </ul>
+           
+          </div>
+    </nav>
+
+    <div style="background-color:lightgray; max-width: 100%; height: auto; margin: 5%; display: flex; flex-direction: column; align-items: center;">
+      <div style=" display: flex; flex-direction: row; align-items: center;  width: 100%; height: 50px;">
+        &nbsp;  &nbsp; <b> My Role: </b>  &nbsp;
+        <div id="roleText" style="width: 40%;"></div> 
+      <button class="btn btn-dark my-1 my-sm-0" style="margin-right: 5px;" onclick="switchRole()" >Switch Role</button>
+      </div>
+
+      <div style=" display: flex; flex-direction: row; width: 100%; align-items: center; height: 50px;">
+        &nbsp;  &nbsp; <b> My Address: </b> &nbsp;
+       <input id="addressText" style="width: 32%; margin-right: 5px;" ></input> 
+       <button id="myAddressButton" class="btn btn-dark my-2 my-sm-0"  style="float:right" onclick="newAddressEdition()" >Edit Address</button>
+
+      </div>
+
+      <div id="" style="width: 32%;" ></div> 
+      <button id="myOrdersButton" class="btn btn-outline-dark my-2 my-sm-0"  style="width: 100%;" onclick="showVolunteerOrders()" >My Orders</button>
+      </div>
+      
+    </div>
+
+    <div id = "volunteerContainter" style="max-width: 100%; margin: 5%;">
+
+      &nbsp; <b> Pending Delivery Request Info </b>
+      <div>
+        <div id='pendingRequestContainer' style='height:300px; display: none; overflow-x: scroll; overflow-y: scroll;'> </div>
+        <div id="map" style="height: 300px; width: 100%;"></div>
+      </div>
+
+      <div style="display:flex; align-items:center">
+        <button class="btn btn-dark my-2 my-sm-0" style="margin: 0 auto;" id="mapButton" onclick="changeMapView()" >Map View</button> 
+        <button class="btn btn-dark my-2 my-sm-0" style="margin: 0 auto;" onclick="changeListView()" >List View</button> 
+      </div>
+    
+    </div>
+
+
+    <div id = "citizenContainter" style="max-width: 100%; margin: 5%; margin-bottom: 42%; display: none;">
+     &nbsp;  <b> My History Requests </b>
+      <div>
+        <div id='historyRequestContainer' style='height:400px; overflow-x: scroll; overflow-y: scroll;'> </div>
+      </div>
+
+      <div style="display:flex; align-items:center">
+        <button class="btn btn-dark my-2 my-sm-0" style="margin: 0 auto;" id="mapButton" onclick="newDeliveryRequest()" >New Delivery Request</button> 
+      </div>
+
+    </div>
+
+    <div id = "volunteerOrderContainter" style="max-width: 100%; margin: 5%; margin-bottom: 42%; display: none; ">
+      <b> My Order Requests </b>
+      <div>
+        <div id='historyOrderContainer' style='height:300px; overflow-x: scroll; overflow-y: scroll; display: none;'> </div>
+      </div>
+
+      <div style="display:flex; align-items:center">
+        <button class="btn btn-dark my-2 my-sm-0"  style="margin: 0 auto;" id="backButton" onclick="volunteerOrderBack()" >Go Back</button>   
+      </div>
+    
+    </div>
+
+
+
+<style>
+  .mapboxgl-popup {
+  max-width: 400px;
+  font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  }
+  </style>
+
+<style>
+  /*背景层*/
+  .popLayer {
+      display: none;
+      background-color: #B3B3B3;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 10;
+      -moz-opacity: 0.8;
+      opacity:.80;
+      filter: alpha(opacity=80);/* 只支持IE6、7、8、9 */
+  }
+
+  /*弹出层*/
+ .popBox {
+      display: flex;
+      align-items: center;
+      background-color: #FFFFFF;
+      z-index: 11;
+      width: 300px;
+      height: 250px;
+      position:fixed;
+      top:0;
+      right:0;
+      left:0;
+      bottom:0;
+      margin:auto;
+  }
+
+  .popBox .close{
+      text-align: right;
+      margin-right: 5px;
+      background-color: #F8F8F8;
+  }
+
+  /*关闭按钮*/
+  .popBox .close a {
+      text-decoration: none;
+      color: #2D2C3B;
+  }
+
+</style>
+<!-- <input type="button" name="popBox" value="弹出框" οnclick="popBox()"> -->
+<div id="popLayer" class="popLayer"></div>
+<div id="popBox" class="popBox" style="display: none;">
+
+    <form style=" margin: 20px;">
+      <p class="title"><b>Please update order status:</b></p>
+      <p id = "idDeleteText" class="title"></p>
+      <input type="radio" id="pending" name="status" value="pending">
+      <label class="title" for="pendingButton">Pending</label><br>
+
+      <input type="radio" id="In process" name="status" value="inProcess">
+      <label class="title" for="processButton">In process</label><br>  
+
+      <input type="radio" id="Finished" name="status" value="finished">
+      <label class="title" for="finishedButton">Finished</label>
+      
+      <br><br>
+      <div style="display: flex; flex-direction:row; align-items: center;">
+        <div style="width: 50%; display: flex; flex-direction: column; ">
+          <button type="button" class="btn btn-dark" onclick="cancelUpdate()"> Back </button>
+        </div>
+        <div style="width: 50%; display: flex; flex-direction: column; ">
+          <button type="button" class="btn btn-dark" onclick="confirmStatusUpdate()"> Confirm </button> 
+        </div>
+      </div>
+    </form>
+
+    <div class="close">
+ 
+    </div>
+</div>
+
+
+<div id="popDeleteLayer" class="popLayer"></div>
+<div id="popDeleteBox" class="popBox" style="display: none;">
+
+    <form style=" margin: 20px;">
+      <p class="title" style="font-size: 20px;"> Are you sure to cancel your request?</p>
+      <p id = "idText" class="title"></p>
+      <p id="desText" class=""></p>
+      
+      <br><br>
+      <div style="display: flex; flex-direction:row; align-items: center;">
+        <div style="width: 50%; display: flex; flex-direction: column; ">
+          <button type="button" class="btn btn-dark" onclick="cancelDelete()"> Back </button>
+        </div>
+        <div style="width: 50%; display: flex; flex-direction: column; ">
+          <button type="button" class="btn btn-dark" onclick="confirmDelete()"> Confirm </button> 
+        </div>
+      </div>
+    </form>
+
+    <div class="close">
+ 
+    </div>
+</div>
+  </body>
+
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript"   src="../../public/jumpPage"></script> 
+
+  <script src="../../public/deliverys"></script> 
+
+  
+</html>

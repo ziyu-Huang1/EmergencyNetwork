@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="/views_refactor_temp/chatpage.css" type="text/css"> -->
+    <title>ESN</title>
+  </head>
+  <body>
+    <!-- Optional JavaScript -->
+    <!-- Ajax first, then Popper.js, then Bootstrap JS -->
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+   
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <a class="navbar-brand" href="#">
+          <img src="/pic/example.png" width="30" height="30" class="d-inline-block align-top" alt="">
+          ESN
+        </a>
+    </nav>
+
+    <form style="max-width: 100%; margin:5%;">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Username</label>
+          <input type="username" class="form-control" id="username" aria-describedby="emailHelp" placeholder="Enter username">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Password</label>
+          <input type="password" class="form-control" id="password" placeholder="Password">
+        </div>
+        <!-- <button type="button" class="btn btn-dark" style="width: 96%;" onclick="location.href = '/views_refactor_temp/chatpage.html'">login</button> -->
+        <button type="button" class="btn btn-dark" style="width: 100%;" onclick="login()">login</button>
+
+        <!-- <button type="button" class="btn btn-dark" style="width: 48%; float: right;" data-toggle="modal" data-target="#registerModal">register</button> -->
+    </form>
+
+    <!-- Modal -->
+    <!-- <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Welcome to the community!</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <p > In this app, you will be able to share your selected status in your profile page, and here are the status options: </p>
+                <p style="color: green"> OK: I'm fine and don't need help</p>
+                <p style="color: darkgoldenrod"> HELP: I need help, but it's not a life-threatening emergency.</p>
+                <p style="color: red"> EMERGENCY: I need help now: this is a life-threatening emergency!</p>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-dark" onclick="jumpToPublicWall()">Save changes</button>
+            </div>
+        </div>
+        </div>
+    </div> -->
+  
+    <!--Model references: https://getbootstrap.com/docs/4.0/components/modal/  -->
+    <div class="row">
+      <!--Confirm Model-->
+      <div class="modal fade" id="confirmModal">
+        <div class="modal-dialog" >
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="model-totle">Do you want to create a new account?</h5>
+            </div>
+            <div class="confirm-modal_body" style="margin: 5%">
+               
+            </div>
+            <div class="modal-footer">
+              <!-- <input type="button" class="btn btn-primary" value="Back" data-bs-dismiss="modal" /> -->
+              <input type="button" class="btn btn-dark" value="Back" onclick="hide()" /> 
+              <input type="button" class="btn btn-dark" value="Confirm" onclick = "showWelcomeModal()" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!--Welcome modal create a model that using fade to present-->
+      <div class="modal fade" id="welcomeModal">
+        <div class="modal-dialog" >
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" >Welcome to the community!</h5>
+              <h10 class="message" ></h10>
+            </div>
+            <div class="welcome-modal-body" style="margin: 5%">
+              <p > In this app, you will be able to share your selected status in your profile page, and here are the status options: </p>
+              <p style="color: green"> OK: I'm fine and don't need help</p>
+              <p style="color: darkgoldenrod"> HELP: I need help, but it's not a life-threatening emergency.</p>
+              <p style="color: red"> EMERGENCY: I need help now: this is a life-threatening emergency!</p>
+
+            </div>
+            <div id="welcome-modal-err-msg" style="margin: 5%">
+       
+            </div>
+            <div class="modal-footer">
+              <div class="form-check">
+                <input id="userAgreeCheckBox" class="form-check-input" type="checkbox" >
+                <label class="form-check-label">I acknowledge the above content</label>
+              </div>
+              <input type="button" class="btn btn-dark" value="Back" onclick="hide()"/>
+              <!-- <input type="button" class="btn btn-primary" value="Confirm" data-bs-dismiss="modal"/> -->
+              <input type="button" class="btn btn-dark" value="Confirm" onclick ="checkUserAgreeCheckBox()"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> 
+   
+
+ <!-- script -->
+ <script type="text/javascript" src="login.js"></script>
+
+
+
+
+  </body>
+</html>
