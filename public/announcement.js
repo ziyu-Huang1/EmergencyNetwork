@@ -21,7 +21,8 @@ socket.on('connect',()=>{
 
 socket.on('logout',()=>{
 
-  var data = {'username' : localStorage.getItem('username')}
+  var data = {'username' : 
+              localStorage.getItem('username')}
   
   $.ajax({
       type: 'put',
