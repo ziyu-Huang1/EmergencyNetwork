@@ -49,13 +49,17 @@ socket.on('logout',()=>{
 
 })
 
-socket.on('privilegeChange',(data)=>{
-    var privilege  =JSON.parse(JSON.stringify(data))
+socket.on('privilegeChange'
+          ,(data)=>{
+    var privilege  =
+        JSON.parse(JSON.stringify(data))
     localStorage.setItem('privilege',privilege)
-    if(privilege == "administrator"){
+    if(privilege == "administrator")
+    {
 
         socket.emit('showActiveUser')
-    }else{
+    }else
+    {
 
         socket.emit('showUser')
     }
