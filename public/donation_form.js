@@ -7,12 +7,15 @@ var socket =  io({
 
 socket.on('logout',()=>{
 
-    var data = {'username' : localStorage.getItem('username')}
+    var data = {'username' : localStorage.getItem(
+        'username'
+    )}
     
     $.ajax({
         type: 'put',
         url: "/users/offline",
-        data: JSON.stringify(data),
+        data:
+        JSON.stringify(data),
         dataType: "json",
         headers: { "token": localStorage.getItem('token') },
         success: function (data, status, jqXHR) {
