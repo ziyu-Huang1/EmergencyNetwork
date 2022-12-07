@@ -16,9 +16,13 @@ socket.on('connect',()=>{
 
 socket.on('logout',()=>{
 
-    var data = {'username' : localStorage.getItem('username')}
+    var 
+    data 
+    =
+        {'username' : localStorage.getItem('username')}
 
-    $.ajax({
+    $.ajax(
+        {
         type: 'put',
         url: "/users/offline",
         data: JSON.stringify(data),
